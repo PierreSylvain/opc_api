@@ -1,0 +1,37 @@
+services:
+
+  dev:
+    image: pierresylvain/phpdev:latest
+    command: sleep infinity
+    volumes:
+      - ../.:/workspace
+    ports:
+      - "8000:8000"
+    depends_on:
+      - database
+    environment:
+      DATABASE_URL: "mysql://app_user:app_password@database:3306/app_db?serverVersion=10.11.2-MariaDB&charset=utf8mb4"
+      MAILER_DSN: "smtp://mailer:1025"
+      
+  database:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: app_db
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: app_password
+    ports:
+      - "3306:3306"
+    
+
+  mailer:
+    image: axllent/mailpit
+    ports:
+      - "1025"
+      - "8025"
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+
+volumes:
+  database_data:
